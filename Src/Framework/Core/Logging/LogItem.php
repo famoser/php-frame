@@ -15,6 +15,8 @@ class LogItem
     private $logLevel;
     private $message;
 
+    const LineDivisor = "\n";
+
     public function __construct($source, $logLevel, $message)
     {
         $this->source = $source;
@@ -29,12 +31,14 @@ class LogItem
 
     function renderAsHtml()
     {
-        return "<b>".$this->getLogLevelAsString() . "</b>: " . $this->message . "<br/>" . $this->source;
+        return nl2br("<b>".$this->getLogLevelAsString() . "</b>: " . $this->message . "<br/>" . $this->source);
     }
 
     private function getLogLevelAsString()
     {
-        if ($this->logLevel == Logger::LOG_LEVEL_INFO) {
+        if ($this->logLevel == Logger::LOG_LEVEL_DEBUG) {
+            return "debug";
+        } else if ($this->logLevel == Logger::LOG_LEVEL_INFO) {
             return "info";
         } else if ($this->logLevel == Logger::LOG_LEVEL_WARNING) {
             return "warning";

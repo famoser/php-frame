@@ -9,10 +9,12 @@
 namespace Famoser\phpSLWrapper\Framework\Core\Logging;
 
 
+use Exception;
 use Famoser\phpSLWrapper\Framework\Core\Singleton\Singleton;
 
 class Logger extends Singleton
 {
+    const LOG_LEVEL_DEBUG = 0;
     const LOG_LEVEL_INFO = 1;
     const LOG_LEVEL_WARNING = 2;
     const LOG_LEVEL_ERROR = 3;
@@ -23,83 +25,108 @@ class Logger extends Singleton
 
     private $logItems = array();
 
+    public function __construct()
+    {
+
+    }
+
+
+    /**
+     * log debug message
+     * @param $message
+     * @param null $object optional: reference an object important to understand the log entry
+     */
+    public function logDebug($message, $object = null)
+    {
+        $this->doLog(Logger::LOG_LEVEL_DEBUG, $message, $object);
+    }
 
     /**
      * log an informational message
      * @param $message
      */
-    public function logInfo($message)
+    public function logInfo($message, $object = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_INFO, $message);
+        $this->doLog(Logger::LOG_LEVEL_INFO, $message, $object);
     }
 
     /**
      * log a message which may need the attention of the developer, but may not endager the main purpose of the application
      * @param $message
+     * @param null $object optional: reference an object important to understand the log entry
      */
-    public function logWarning($message)
+    public function logWarning($message, $object = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_WARNING, $message);
+        $this->doLog(Logger::LOG_LEVEL_WARNING, $message, $object);
     }
 
 
     /**
      * log an error which occurred while executing a task and may be related to incorrect data / misconfiguration
      * @param $message
+     * @param null $object optional: reference an object important to understand the log entry
      */
-    public function logError($message)
+    public function logError($message, $object = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_ERROR, $message);
+        $this->doLog(Logger::LOG_LEVEL_ERROR, $message, $object);
     }
 
     /**
      * log an error which may be related to a programming mistake, and not related to corrupt data
      * @param $message
+     * @param null $object optional: reference an object important to understand the log entry
      */
-    public function logFatal($message)
+    public function logFatal($message, $object = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_FATAL, $message);
+        $this->doLog(Logger::LOG_LEVEL_FATAL, $message, $object);
     }
 
     /**
      * log an exception
      * @param $exception
      */
-    public function logException(\Exception $exception)
+    public function logException(Exception $exception, $message = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_FATAL, strval($exception));
+        $msg = $exception->getMessage();
+        if ($message != null) {
+            $msg = "Message: " . $message . " Exception: " . $msg;
+        }
+        $this->doLog(Logger::LOG_LEVEL_FATAL, $msg, null);
     }
 
 
     /**
      * log an Assert (the result of a functionality validation test) as failed
      * @param $message
+     * @param null $object optional: reference an object important to understand the log entry
      */
-    public function logAssertFailed($message)
+    public function logAssertFailed($message, $object = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_ASSERT_FAILED, $message);
+        $this->doLog(Logger::LOG_LEVEL_ASSERT_FAILED, $message, $object);
     }
 
     /**
      * log an Assert (the result of a functionality validation test) as validated
      * @param $message
+     * @param null $object optional: reference an object important to understand the log entry
      */
-    public function logAssertValidated($message)
+    public function logAssertValidated($message, $object = null)
     {
-        $this->doLog(Logger::LOG_LEVEL_ASSERT_VALIDATED, $message);
+        $this->doLog(Logger::LOG_LEVEL_ASSERT_VALIDATED, $message, $object);
     }
 
     /**
      * log an Assert (the result of a functionality validation test)
      * @param $message
      * @param bool $outcome result of validation
+     * @param null $object optional: reference an object important to understand the log entry
      */
-    public function logAssert($message, bool $outcome)
+    public function logAssert($message, bool $outcome, $object = null)
     {
         if ($outcome === true)
-            $this->logAssertValidated($message);
+            $this->logAssertValidated($message, $object);
         else
-            $this->logAssertFailed($message);
+            $this->logAssertFailed($message, $object = null);
     }
 
     /**
@@ -118,29 +145,49 @@ class Logger extends Singleton
         return count($this->logItems);
     }
 
+    /**
+     * @return string as HTML formatted logs
+     */
     public function getLogsAsHtml()
     {
         $str = "";
         foreach ($this->getLogItems() as $logItem) {
-            $str .= "<p>".$logItem->renderAsHtml()."</p>";
+            $str .= "<p>" . $logItem->renderAsHtml() . "</p>";
         }
         return $str;
     }
 
+    /**
+     * @return string as string with \n line divisors formatted logs
+     */
     public function getLogsAsText()
     {
         $str = "";
         foreach ($this->getLogItems() as $logItem) {
-            $str .= $logItem->renderAsText()."\n\n";
+            $str .= $logItem->renderAsText() . "\n\n";
         }
         return $str;
     }
 
-    private function doLog($level, $message)
+    private function doLog($level, $message, $object)
     {
         $source = $this->getSource();
-        $logItem = new LogItem($source, $level, $message);
+
+        $addMessage = $this->getObjectInfo($object);
+        if ($addMessage != "")
+            $addMessage = " passed object: " . $addMessage;
+
+        $logItem = new LogItem($source, $level, $message . $addMessage);
         $this->addLogItem($logItem);
+    }
+
+    private function getObjectInfo($object)
+    {
+        if (is_null($object))
+            return "";
+        if (is_object($object) || is_array($object))
+            return json_encode($object);
+        return $object;
     }
 
     private function addLogItem(LogItem $log)
@@ -150,24 +197,17 @@ class Logger extends Singleton
 
     private function getSource($skips = 3)
     {
-        /* debug_backtrace() is in form like
-        [0]=>
-          array(4) {
-            ["file"] => string(10) "/tmp/a.php"
-            ["line"] => int(10)
-            ["function"] => string(6) "a_test"
-            ["args"]=>
-            array(1) {
-              [0] => &string(6) "friend"
-            }
-
-        skip first 2
-        */
-
         $callstack = "";
         foreach (debug_backtrace() as $item) {
+            $args = array();
+            foreach ($item["args"] as $arg) {
+                if ($arg instanceof Exception)
+                    $args[] = $arg->getMessage();
+                else
+                    $args[] = $arg;
+            }
             if ($skips-- <= 0) {
-                $callstack .= "at " . $item["function"] . ", line " . $item["line"] . " in file " . $item["file"] . " with args " . implode(",", $item["args"]) . "\n";
+                $callstack .= "at " . $item["function"] . ", line " . $item["line"] . " in file " . $item["file"] . " with args " . json_encode($args) . LogItem::LineDivisor;
             }
         }
 

@@ -10,47 +10,27 @@ namespace Famoser\phpSLWrapper\Framework\Core\Singleton;
 
 class Singleton implements ISingleton
 {
-    /**
-     * instance
-     *
-     * Statische Variable, um die aktuelle (einzige!) Instanz dieser Klasse zu halten
-     *
-     * @var Singleton
-     */
-    protected static $_instance = null;
+    protected static $instances = array();
+
+    private function __clone()
+    {
+    }
+
+    private function __construct()
+    {
+    }
 
     /**
-     * get instance
-     *
-     * Falls die einzige Instanz noch nicht existiert, erstelle sie
-     * Gebe die einzige Instanz dann zurück
-     *
-     * @return   Singleton
+     * @return static
      */
-    public static function getInstance()
+    final public static function getInstance()
     {
-        if (null === self::$_instance) {
-            self::$_instance = new self;
+        $classname = get_called_class();
+        if (!isset(static::$instances[$classname])) {
+            static::$instances[$classname] = new static();
         }
-        return self::$_instance;
-    }
 
-    /**
-     * clone
-     *
-     * Kopieren der Instanz von aussen ebenfalls verbieten
-     */
-    protected function __clone()
-    {
-    }
-
-    /**
-     * constructor
-     *
-     * externe Instanzierung verbieten
-     */
-    protected function __construct()
-    {
+        return static::$instances[$classname];
     }
 }
 
