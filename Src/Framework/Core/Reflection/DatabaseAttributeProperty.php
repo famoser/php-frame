@@ -45,7 +45,7 @@ class DatabaseAttributeProperty implements JsonSerializable
             $this->dataType = DatabaseAttributeProperty::DATA_TYPE_DATE;
         } else if ($compareType == "time") {
             $this->dataType = DatabaseAttributeProperty::DATA_TYPE_TIME;
-        } else if ($compareType == "int") {
+        } else if ($compareType == "int"||$compareType == "integer") {
             $this->dataType = DatabaseAttributeProperty::DATA_TYPE_INT;
         } else if ($compareType == "text" || strpos($compareType, "varchar") !== false) {
             $this->dataType = DatabaseAttributeProperty::DATA_TYPE_STRING;
@@ -59,30 +59,39 @@ class DatabaseAttributeProperty implements JsonSerializable
 
     public function getAsCreateSql($flavour = DataService::DRIVER_MYSQL)
     {
-        $sql = $this->name . " " . $this->type;
-        if ($this->notNull)
-            $sql .= "  NOT NULL";
+        $sql = $this->name . " " . $this->getConvertedType($flavour);
+        //INTEGER PRIMARY KEY AUTOINCREMENT
+        if ($flavour == DataService::DRIVER_SQLITE && $this->isPrimary()) {
+            $sql .= " PRIMARY KEY";
+        }
+        if ($this->notNull && !($flavour == DataService::DRIVER_SQLITE && $this->isPrimary()))
+            $sql .= " NOT NULL";
         if ($this->autoIncrement) {
             if ($flavour == DataService::DRIVER_SQLITE)
                 $sql .= " AUTOINCREMENT";
             else if ($flavour == DataService::DRIVER_MYSQL)
                 $sql .= " AUTO_INCREMENT";
             else {
-                Logger::getInstance()->logError("Unknown Database Driver: " . $flavour . ". Using AUTOINCREMENT.");
+                Logger::getInstance()->logError("Unknown Database Driver: " . $flavour . ". Using AUTOINCREMENT. You may lose your primary key setting under this circumstances!");
                 $sql .= " AUTOINCREMENT";
             }
         }
+        if ($flavour == DataService::DRIVER_MYSQL && $this->isPrimary()) {
+            $sql .= ",PRIMARY KEY (" . $this->name . ")";
+        }
         return $sql;
+    }
+
+    private function getConvertedType($flavour = DataService::DRIVER_MYSQL)
+    {
+        if ($flavour == DataService::DRIVER_SQLITE && $this->dataType == DatabaseAttributeProperty::DATA_TYPE_INT)
+            return "INTEGER";
+        return $this->type;
     }
 
     public function isPrimary()
     {
         return $this->primary;
-    }
-
-    public function getAsPrimaryKeySql()
-    {
-        return "PRIMARY KEY (" . $this->name . ")";
     }
 
     public function getName()

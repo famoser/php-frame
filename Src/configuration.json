@@ -4,13 +4,13 @@
   },
   "DataService": {
     "Sqlite": {
-      "primary": false,
+      "primary": true,
       "type" : "sqlite",
       "path": "sqlite.db",
       "createIfNotExisting" : true
     },
     "MySql": {
-      "primary": true,
+      "primary": false,
       "type" : "mysql",
       "host": "127.0.0.1",
       "database": "sqlwrappertest",

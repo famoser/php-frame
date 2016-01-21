@@ -11,51 +11,28 @@ namespace Famoser\phpSLWrapper\Framework\Models\DataService;
 
 class EntityBase
 {
-    public function __construct()
+    public function __construct($id = 0)
     {
-        $this->IsInDatabase = false;
+        $this->id = $id;
     }
-
-    private $IsInDatabase;
 
     /**
      * @return bool
      */
     public function IsInDatabase()
     {
-        if (!$this->IsInDatabase)
-            return $this->Id > 0;
-        return true;
-    }
-
-    /**
-     * @param bool $IsInDatabase
-     */
-    public function setIsInDatabase(bool $IsInDatabase)
-    {
-        $this->IsInDatabase = $IsInDatabase;
+        return $this->id > 0;
     }
 
 
     /* @database INT, notnull, autoincrement, primary */
-    private $Id;
+    private $id;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return $this->Id;
-    }
-
-    /**
-     * @param mixed $Id
-     * @return EntityBase
-     * @attr
-     */
-    public function setId($Id)
-    {
-        $this->Id = $Id;
-        return $this;
+        return $this->id;
     }
 }

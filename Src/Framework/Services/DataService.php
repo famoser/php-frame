@@ -16,12 +16,12 @@ use Famoser\phpSLWrapper\Framework\Core\Reflection\DatabaseAttributeProperty;
 use Famoser\phpSLWrapper\Framework\Core\Singleton\Singleton;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\assert_all_keys_exist;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createDeleteSql;
+use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createGetSql;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createInsertSql;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createTableExistSql;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createTableSql;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createUpdateSql;
 use Famoser\phpSLWrapper\Framework\Models\DataService\EntityBase;
-use Famoser\phpSLWrapper\Framework\Models\DataService\EntityInfo;
 use Famoser\phpSLWrapper\Framework\Models\DataService\TableInfo;
 use PDO;
 use PDOStatement;
@@ -142,7 +142,7 @@ class DataService extends Singleton
 
     private function getDatabaseError(Exception $ex)
     {
-        if ($ex->getCode() == "42S02")
+        if ($ex->getCode() == "42S02" || strpos($ex->getMessage(),"no such table") !== false)
             return DataService::ERROR_TABLE_NOT_FOUND;
         return DataService::ERROR_UNKNOWN_ERROR;
     }
@@ -174,7 +174,7 @@ class DataService extends Singleton
     }
 
     /**
-     * @param EntityBase $entity
+     * @param EntityBase $entity : Pass the object you want to delete. Only the Id is required to be set, but make sure to pass the correct instance type so the DataService known from which table to delete from!
      * @return bool
      */
     public function deleteFromDatabase(EntityBase $entity)
@@ -186,9 +186,60 @@ class DataService extends Singleton
         }
     }
 
-    public function getFromDatabase(array $condition, array $orderBy)
+    /**
+     * @param $class : Full namespace + name of the class to be retrieved
+     * @param array|null $condition : Array of form: array("property"=>"value","property"=>array("value1,value2,value3")). Pass null if all entries of table should be returned
+     * @param array|null $orderBy : Array of Form: array("Order1","Order2","Order3"). Pass null if you do not want to order.
+     * @param array|null $properties : Array of Form: array("Property1","Property2"). Pass null if you want all properties.
+     * @param int $limit : If you want a limit pass number between >=0. Pass value smaller than 0 (I recommend -1 for easy read) to retrieve all results
+     * @return bool|$class[]
+     */
+    public function getFromDatabase($class, array $condition = null, array $orderBy = null, array $properties = null, int $limit = -1)
     {
+        $tableInfo = $this->getTableInfoByClass($class);
+        if ($tableInfo === false)
+            return false;
 
+        $sql = createGetSql($tableInfo, $condition, $orderBy, $properties, $limit);
+        $arr = array();
+        if ($condition != null && count($condition) > 0) {
+            foreach ($condition as $property => $value) {
+                if (is_array($value)) {
+                    for ($i = 0; $i < count($value); $i++) {
+                        $arr[$i . $properties] = $value[$i];
+                    }
+                } else {
+                    $arr[$properties] = $value;
+                }
+            }
+        }
+
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            if ($stmt->execute($arr)) {
+                return $this->fetchAllToClass($stmt, $tableInfo);
+            }
+        } catch (Exception $ex) {
+            Logger::getInstance()->logException($ex);
+        }
+        return false;
+    }
+
+    /**
+     * @param $class : Full namespace + name of the class to be retrieved
+     * @param array|null $condition : Array of form: array("property"=>"value","property"=>array("value1,value2,value3")). Pass null if all entries of table should be returned
+     * @param array|null $orderBy : Array of Form: array("Order1","Order2","Order3"). Pass null if you do not want to order.
+     * @param array|null $properties : Array of Form: array("Property1","Property2"). Pass null if you want all properties.
+     * @param int $limit : If you want a limit pass number between >=0. Pass value smaller than 0 (I recommend -1 for easy read) to retrieve all results
+     * @return bool|$class
+     */
+    public function getSingleFromDatabase($class, array $condition = null, array $orderBy = null, array $properties = null, int $limit = -1)
+    {
+        $res = $this->getFromDatabase($class, $condition, $orderBy, $properties, $limit);
+        if (is_array($res) && count($res) > 0) {
+            return $res[0];
+        }
+        return false;
     }
 
     private $tableInfo = array();
@@ -196,6 +247,18 @@ class DataService extends Singleton
     private function getTableInfo(EntityBase $entity)
     {
         $class = get_class($entity);
+        return $this->getTableInfoByClass($class, $entity);
+    }
+
+    private function getTableInfoByClass($class, EntityBase $entity = null)
+    {
+        if ($entity == null) {
+            $entity = new $class();
+            if (!($entity instanceof EntityBase)) {
+                Logger::getInstance()->logFatal("Database Objects must extend from EntityBase. " . $class . " does not!", $entity);
+                return false;
+            }
+        }
         if (isset($this->tableInfo[$class])) {
             return $this->tableInfo[$class];
         } else {
@@ -223,7 +286,7 @@ class DataService extends Singleton
             $err = $this->getDatabaseError($ex);
             if ($err == DataService::ERROR_TABLE_NOT_FOUND) {
                 //easy peasy
-                $sql = createTableSql($info);
+                $sql = createTableSql($info, $this->connectionType);
                 return $this->executeStatement($sql);
             }
             Logger::getInstance()->logException($ex);
@@ -295,7 +358,15 @@ class DataService extends Singleton
     private function getPropertyArray(EntityBase $entity, bool $excludeId = false)
     {
         $nfo = $this->getTableInfo($entity);
-        $arr = (array)$entity;
+        $objArr = (array)$entity;
+        $arr = array();
+        //clean array
+        foreach ($objArr as $key => $val) {
+            $jsonKey = json_encode($key);
+            $realKey = substr(substr($jsonKey, strrpos($jsonKey, "\u0000") + 6), 0, -1);
+            $arr[$realKey] = $val;
+        }
+
         $res = array();
         foreach ($nfo->getProperties() as $property) {
             $res[$property->getName()] = $property->convertPropertyValueForDatabase($arr[$property->getName()]);

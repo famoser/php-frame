@@ -202,12 +202,19 @@ class Logger extends Singleton
             $args = array();
             foreach ($item["args"] as $arg) {
                 if ($arg instanceof Exception)
-                    $args[] = $arg->getMessage();
+                    $args[] = "Exception with message: " . $arg->getMessage();
                 else
                     $args[] = $arg;
             }
             if ($skips-- <= 0) {
-                $callstack .= "at " . $item["function"] . ", line " . $item["line"] . " in file " . $item["file"] . " with args " . json_encode($args) . LogItem::LineDivisor;
+                $callstack .= "at ";
+                if (isset($item["function"]))
+                    $callstack .= $item["function"];
+                if (isset($item["line"]))
+                    $callstack .= ", line " . $item["line"];
+                if (isset($item["file"]))
+                    $callstack .= " in file " . $item["file"];
+                $callstack .= " with args " . json_encode($args) . LogItem::LineDivisor;
             }
         }
 

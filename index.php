@@ -21,9 +21,12 @@ require __DIR__ . DIRECTORY_SEPARATOR . "Src" . DIRECTORY_SEPARATOR . "Framework
 hi_framework();
 //do stuff
 
-$info = new EntityInfo(new UserModel("Florian"));
 $service = DataService::getInstance();
-Logger::getInstance()->logDebug("info: ", $info->getProperties());
+$usr = new UserModel("Florian");
+if ($service->saveToDatabase($usr))
+    echo "successfull";
+else
+    echo "failed";
 
 //say bye
 bye_framework();

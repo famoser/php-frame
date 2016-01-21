@@ -13,12 +13,12 @@ use Famoser\phpSLWrapper\Framework\Models\DataService\EntityBase;
 
 class UserModel extends EntityBase
 {
-    /* @database string, notnull */
-    private $Name;
+    /* @database TEXT, notnull */
+    private $name;
 
-    public function __construct($name)
+    public function __construct($name, $id = 0)
     {
-        parent::__construct();
-        $this->Name = $name;
+        parent::__construct($id);
+        $this->name = $name;
     }
 }
