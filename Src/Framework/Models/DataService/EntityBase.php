@@ -23,7 +23,9 @@ class EntityBase
      */
     public function IsInDatabase()
     {
-        return $this->IsInDatabase;
+        if (!$this->IsInDatabase)
+            return $this->Id > 0;
+        return true;
     }
 
     /**

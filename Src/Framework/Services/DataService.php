@@ -11,10 +11,18 @@ namespace Famoser\phpSLWrapper\Framework\Services;
 
 use Exception;
 use Famoser\phpSLWrapper\Framework\Core\Logging\Logger;
+use Famoser\phpSLWrapper\Framework\Core\Reflection\AttributeReflectionClass;
+use Famoser\phpSLWrapper\Framework\Core\Reflection\DatabaseAttributeProperty;
 use Famoser\phpSLWrapper\Framework\Core\Singleton\Singleton;
 use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\assert_all_keys_exist;
+use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createDeleteSql;
+use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createInsertSql;
+use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createTableExistSql;
+use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createTableSql;
+use function Famoser\phpSLWrapper\Framework\Helpers\ValidationHelper\createUpdateSql;
 use Famoser\phpSLWrapper\Framework\Models\DataService\EntityBase;
 use Famoser\phpSLWrapper\Framework\Models\DataService\EntityInfo;
+use Famoser\phpSLWrapper\Framework\Models\DataService\TableInfo;
 use PDO;
 use PDOStatement;
 
@@ -29,6 +37,10 @@ class DataService extends Singleton
     //internal errors
     const ERROR_TABLE_NOT_FOUND = 10200;
     const ERROR_UNKNOWN_ERROR = 10299;
+
+    const FORMAT_DATETIME = "Y-m-d H:i:s";
+    const FORMAT_DATE = "Y-m-d";
+    const FORMAT_TIME = "H:i:s";
 
     public function __construct()
     {
@@ -80,7 +92,7 @@ class DataService extends Singleton
         try {
             $this->setConnection(new PDO($host, $user, $password));
             $this->setAttributes($this->getConnection());
-            return $this->initializeService();
+            return true;
         } catch (\Exception $ex) {
             Logger::getInstance()->logException($ex);
         }
@@ -107,16 +119,6 @@ class DataService extends Singleton
         }
     }
 
-    private function initializeService()
-    {
-        if ($this->getEntityInfos() === false) {
-            Logger::getInstance()->logFatal("DataService could not initialize correctly, EntityInfos could not be read out");
-            return false;
-        }
-
-        return true;
-    }
-
     private function ReturnDatabaseError($const)
     {
         if ($const === DataService::ERROR_CONNECTION_NULL) {
@@ -129,7 +131,7 @@ class DataService extends Singleton
 
     private function EvaluateDatabaseException(Exception $ex)
     {
-        $err = $this->GetDatabaseError($ex);
+        $err = $this->getDatabaseError($ex);
         if ($err === DataService::ERROR_TABLE_NOT_FOUND) {
             Logger::getInstance()->logException($ex, "Table not found");
         } else {
@@ -138,7 +140,7 @@ class DataService extends Singleton
         return false;
     }
 
-    private function GetDatabaseError(Exception $ex)
+    private function getDatabaseError(Exception $ex)
     {
         if ($ex->getCode() == "42S02")
             return DataService::ERROR_TABLE_NOT_FOUND;
@@ -146,83 +148,164 @@ class DataService extends Singleton
     }
 
     /**
-     * @return EntityInfo[]|bool
+     * @param EntityBase $entity
+     * @return bool
      */
-    private function getEntityInfos()
+    public function saveToDatabase(EntityBase $entity)
     {
-        $conn = $this->getConnection();
-        if ($conn == false) {
-            return false;
-        }
-
-        $info = new EntityInfo(new EntityInfo());
-        try {
-            $res = $conn->prepare("SELECT * FROM EntityInfo");
-            //mysql implementation
-            $res->execute();
-            $res = $this->fetchAllToClass($res, $info);
-            if (count($res) == 0) {
-                $this->insertObject($info, $info);
-                return $this->getEntityInfos();
-            } else {
-                return $res;
-            }
-        } catch (Exception $ex) {
-            $error = $this->GetDatabaseError($ex);
-            if ($error == DataService::ERROR_TABLE_NOT_FOUND) {
-                //create table and insert EntityInfo
-                if ($this->createTableForObject($info))
-                    return $this->getEntityInfos();
-            } else {
-                return $this->EvaluateDatabaseException($ex);
-            }
-        }
-        return false;
-    }
-
-    private function createTableForObject(EntityBase $obj)
-    {
-        $info = new EntityInfo($obj);
-        $sql = $info->getAsCreateTableSQL($this->connectionType);
-        try {
-            $con = $this->getConnection()->prepare($sql);
-            return $con->execute();
-        } catch (Exception $ex) {
-            return $this->EvaluateDatabaseException($ex);
-        }
-    }
-
-    private function insertObject(EntityBase $obj, EntityInfo $nfo = null)
-    {
-        if ($nfo == null)
-            $nfo = $this->getEntityInfoForObject($obj);
-
-        if ($nfo === false) {
-            Logger::getInstance()->logError("Could not find EntityInfo for object", $obj);
-            return false;
-        }
-
-        if ($nfo != null) {
-            $info = new EntityInfo($obj);
-            $sql = $info->getAsCreateTableSQL($this->connectionType);
-            try {
-                $con = $this->getConnection()->prepare($sql);
-                return $con->execute();
-            } catch (Exception $ex) {
-                return $this->EvaluateDatabaseException($ex);
-            }
+        if ($entity->IsInDatabase()) {
+            return $this->updateEntity($entity);
+        } else {
+            return $this->insertEntity($entity);
         }
     }
 
     /**
-     * @param EntityBase $obj
-     * @return EntityInfo|bool
+     * @param EntityBase[] $entity
+     * @return bool
      */
-    private function getEntityInfoForObject(EntityBase $obj)
+    public function saveAllToDatabase(array $entity)
     {
-        //todo
+        $res = true;
+        foreach ($entity as $item) {
+            $res &= $this->saveToDatabase($item);
+        }
+        return $res;
+    }
+
+    /**
+     * @param EntityBase $entity
+     * @return bool
+     */
+    public function deleteFromDatabase(EntityBase $entity)
+    {
+        if ($entity->IsInDatabase()) {
+            return $this->deleteEntity($entity);
+        } else {
+            return true;
+        }
+    }
+
+    public function getFromDatabase(array $condition, array $orderBy)
+    {
+
+    }
+
+    private $tableInfo = array();
+
+    private function getTableInfo(EntityBase $entity)
+    {
+        $class = get_class($entity);
+        if (isset($this->tableInfo[$class])) {
+            return $this->tableInfo[$class];
+        } else {
+            $tableInfo = new TableInfo($entity);
+            if (!$tableInfo->getIsEvaluated()) {
+                $this->correctTable($tableInfo);
+                $tableInfo->setIsEvaluated(true);
+            }
+            $this->tableInfo[$class] = $tableInfo;
+            return $tableInfo;
+        }
+    }
+
+    private function correctTable(TableInfo $info)
+    {
+        try {
+            //check if table exists
+            $sql = createTableExistSql($info, $this->connectionType);
+            $res = $this->getConnection()->prepare($sql);
+            if ($res->execute()) {
+                //todo: correct faulty table
+                return true;
+            }
+        } catch (Exception $ex) {
+            $err = $this->getDatabaseError($ex);
+            if ($err == DataService::ERROR_TABLE_NOT_FOUND) {
+                //easy peasy
+                $sql = createTableSql($info);
+                return $this->executeStatement($sql);
+            }
+            Logger::getInstance()->logException($ex);
+        }
         return false;
     }
+
+    private function executeStatement($statement)
+    {
+        try {
+            $res = $this->getConnection()->prepare($statement);
+            return $res->execute();
+        } catch (Exception $ex) {
+            Logger::getInstance()->logException($ex);
+        }
+        return false;
+    }
+
+    private function updateEntity(EntityBase $entity)
+    {
+        $nfo = $this->getTableInfo($entity);
+        $sql = createUpdateSql($nfo, $this->connectionType);
+        $arr = $this->getPropertyArray($entity);
+
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            return $stmt->execute($arr);
+        } catch (Exception $ex) {
+            Logger::getInstance()->logException($ex);
+        }
+        return false;
+    }
+
+    private function insertEntity(EntityBase $entity)
+    {
+        $nfo = $this->getTableInfo($entity);
+        $sql = createInsertSql($nfo, $this->connectionType);
+        $arr = $this->getPropertyArray($entity, true);
+
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            return $stmt->execute($arr);
+        } catch (Exception $ex) {
+            Logger::getInstance()->logException($ex);
+        }
+        return false;
+    }
+
+    private function deleteEntity(EntityBase $entity)
+    {
+        $nfo = $this->getTableInfo($entity);
+        $sql = createDeleteSql($nfo, $this->connectionType);
+
+        try {
+            $stmt = $this->getConnection()->prepare($sql);
+            $stmt->bindValue("Id", $entity->getId());
+            return $stmt->execute();
+        } catch (Exception $ex) {
+            Logger::getInstance()->logException($ex);
+        }
+        return false;
+    }
+
+    /**
+     * @param EntityBase $entity
+     * @param bool $excludeId
+     * @return array
+     */
+    private function getPropertyArray(EntityBase $entity, bool $excludeId = false)
+    {
+        $nfo = $this->getTableInfo($entity);
+        $arr = (array)$entity;
+        $res = array();
+        foreach ($nfo->getProperties() as $property) {
+            $res[$property->getName()] = $property->convertPropertyValueForDatabase($arr[$property->getName()]);
+        }
+        if ($excludeId && isset($res["Id"]))
+            unset($res["Id"]);
+
+        return $res;
+    }
+
 
     private $connection;
     private $connectionType;
@@ -240,7 +323,7 @@ class DataService extends Singleton
             $this->connectionType = DataService::DRIVER_SQLITE;
         } else {
             $this->connectionType = DataService::DRIVER_MYSQL;
-            Logger::getInstance()->logError("Unknown connection Type. Switching to MY_SQL as default.");
+            Logger::getInstance()->logError("Unknown connection Type. Switching to MYSQL as default.");
         }
     }
 
@@ -255,7 +338,7 @@ class DataService extends Singleton
     }
 
 
-    private function fetchAllToClass(PDOStatement $executedStatement, EntityInfo $obj)
+    private function fetchAllToClass(PDOStatement $executedStatement, TableInfo $obj)
     {
         return $executedStatement->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $obj->getClassName());
     }
