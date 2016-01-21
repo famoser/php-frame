@@ -24,6 +24,7 @@ class DataServiceTest extends PHPUnit_Framework_TestCase
         InitTestFramework();
 
         $service = DataService::getInstance();
-        assertNotNull($service);
+        $this->assertNotNull($service);
+        $this->assertTrue(true);
     }
 }
