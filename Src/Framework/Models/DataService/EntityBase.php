@@ -35,4 +35,12 @@ class EntityBase
     {
         return $this->id;
     }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
 }

@@ -14,6 +14,7 @@ namespace Famoser\phpSLWrapper\Tests\Framework\Services;
 
 
 use Famoser\phpSLWrapper\Framework\Services\DataService;
+use Famoser\phpSLWrapper\Tests\Models\TestModel;
 use PHPUnit_Framework_TestCase;
 
 class DataServiceTest extends PHPUnit_Framework_TestCase
@@ -23,8 +24,19 @@ class DataServiceTest extends PHPUnit_Framework_TestCase
         include dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . "TestHelper.php";
         InitTestFramework();
 
+        $model = new TestModel("content");
+        $this->assertTrue($model->getId() == 0);
+
         $service = DataService::getInstance();
         $this->assertNotNull($service);
-        $this->assertTrue(true);
+
+        $service->saveToDatabase($model);
+        $this->assertTrue($model->getId() > 0);
+
+        $objs = $service->getFromDatabase("Famoser\\phpSLWrapper\\Tests\\Models\\TestModel");
+        if (count($objs) > 0) {
+            $this->assertTrue($objs[count($objs)]->getText() == "content");
+            $this->assertTrue($objs[count($objs)]->getId() > 0);
+        }
     }
 }

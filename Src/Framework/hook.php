@@ -28,43 +28,16 @@ spl_autoload_register(function ($class) {
 
     $path = path_by_namespace($class);
 
-    // project-specific namespace prefix
-    $prefix = 'Famoser\\phpSLWrapper\\';
-    $basedir = null;
-    $relative_class = null;
-
-
-    // does the class use the namespace prefix?
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) === 0) {
-        $relative_class = substr($class, $len);
-        $basedir = SPL_BASE_DIR;
-    }
-
-    /*
-    /prefix for Helpers (not classes)
-    $prefix = 'Famoser\\phpSLWrapper\\Framework\\Helpers\\';
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) === 0) {
-        $relative_class = substr($class, $len);
-        $relative_class = substr($relative_class, 0, strpos($class,"\\"));
-        $basedir = SPL_BASE_DIR;
-    }
-    */
-
-
-    if ($basedir != null) {
-        // get the relative class name
-        $file = $basedir . "/" . str_replace('\\', '/', $relative_class) . '.php';
-
-        // if the file exists, require it
-        if (file_exists($file)) {
-            require $file;
-        } else {
-            Logger::getInstance()->logFatal("class not found! class: " . $class . " | path: " . $file);
-        }
+    // if the file exists, require it
+    if ($path != null && file_exists($path)) {
+        require $path;
     } else {
-        Logger::getInstance()->logFatal("invalid namespace prefix! class: " . $class);
+        // does the class use the Framework namespace prefix?
+        $prefix = 'Famoser\\phpSLWrapper\\Framework\\';
+        $len = strlen($prefix);
+        if (strncmp($prefix, $class, $len) === 0) {
+            Logger::getInstance()->logFatal("class not found! class: " . $class . " | path: " . $path);
+        }
     }
 });
 

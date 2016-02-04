@@ -142,7 +142,7 @@ class DataService extends Singleton
 
     private function getDatabaseError(Exception $ex)
     {
-        if ($ex->getCode() == "42S02" || strpos($ex->getMessage(),"no such table") !== false)
+        if ($ex->getCode() == "42S02" || strpos($ex->getMessage(), "no such table") !== false)
             return DataService::ERROR_TABLE_NOT_FOUND;
         return DataService::ERROR_UNKNOWN_ERROR;
     }
@@ -328,7 +328,11 @@ class DataService extends Singleton
 
         try {
             $stmt = $this->getConnection()->prepare($sql);
-            return $stmt->execute($arr);
+            $id = $stmt->execute($arr);
+            if ($id > 0 || $id === 0) {
+                $entity->setId($id);
+                return true;
+            }
         } catch (Exception $ex) {
             Logger::getInstance()->logException($ex);
         }
