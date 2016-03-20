@@ -1,0 +1,15 @@
+.primary-menu-items {
+    float: left;
+}
+
+.secondary-menu-items {
+    float: right;
+}
+
+.primary-menu-items .tiles li {
+    border-right: solid 1px;
+}
+
+.secondary-menu-items .tiles li {
+    border-left: solid 1px;
+}

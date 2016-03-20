@@ -1,0 +1,11 @@
+{
+  "required": [
+    "bootstrap"
+  ],
+  "css": [
+    "bootstrap-dialog.css"
+  ],
+  "js": [
+    "bootstrap-dialog.js"
+  ]
+}

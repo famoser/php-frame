@@ -1,0 +1,48 @@
+form.no-replace > * {
+    position: relative;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    -ms-transition: opacity 0.3s ease-in-out;
+    -o-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+
+    opacity: 1;
+}
+
+form.no-replace.submitting > * {
+    opacity: 0;
+}
+
+form.no-replace input[type=submit] {
+    margin-bottom: 0;
+}
+
+form.no-replace .loading-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+
+    opacity: 0;
+}
+
+form.no-replace .loading-content img {
+    width: 50px;
+    height: 50px;
+}
+
+form.no-replace.submitting .loading-content {
+    opacity: 1;
+}
+
+form.submitting {
+    opacity: 0.6;
+}
+
+form.submitting input,
+form.submitting select,
+form.submitting textarea {
+    pointer-events: none;
+    tab-index: -1;
+}

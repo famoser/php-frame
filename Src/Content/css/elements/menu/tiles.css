@@ -1,0 +1,45 @@
+.tiles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 105px;
+}
+
+.tiles li {
+    float: left;
+    border-top: solid 2px;
+}
+
+.tiles li a {
+    text-align: center;
+
+    padding: 0 20px 28px 20px;
+    display: block;
+    font-size: 20px;
+}
+
+.tiles li:hover,
+.tiles li:focus,
+.tiles li:active,
+.tiles li.active:hover,
+.tiles li.active:focus,
+.tiles li.active:active {
+    border-top: solid 2px;
+}
+
+.tiles li.active {
+    border-top: solid 2px;
+}
+
+.tiles span {
+    font-size: 40px;
+    margin: -5px;
+    display: block;
+}
+
+.tiles [class^="flaticon-"]:before,
+.tiles [class*=" flaticon-"]:before,
+.tiles [class^="flaticon-"]:after,
+.tiles [class*=" flaticon-"]:after {
+    font-size: 40px;
+}

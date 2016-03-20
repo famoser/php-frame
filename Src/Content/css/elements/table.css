@@ -1,0 +1,25 @@
+table.sortable thead th a {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+table thead tr th.buttons1 {
+    width: 48px;
+}
+
+table thead tr th.buttons2 {
+    width: 90px;
+}
+
+table thead tr th.buttons3 {
+    width: 130px;
+}
+
+table td .btn-group {
+    margin: -10px;
+}
+
+table .tilebutton {
+    padding: 2px 6px;
+    float: left;
+}

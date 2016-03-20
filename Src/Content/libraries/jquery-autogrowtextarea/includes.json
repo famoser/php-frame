@@ -1,0 +1,8 @@
+{
+  "required": [
+    "jquery"
+  ],
+  "js": [
+    "jquery.autogrowtextarea.js"
+  ]
+}

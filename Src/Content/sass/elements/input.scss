@@ -1,0 +1,55 @@
+input, select, textarea {
+  @extend .enabled;
+  @extend .border-passive;
+
+  width: 100%;
+  margin-bottom: 10px;
+
+  padding: 10px 15px;
+  outline: none;
+
+  min-width: 100%;
+  max-width: 100%;
+
+  &:active,
+  &:focus {
+    @extend .border-active;
+  }
+
+  &[type=checkbox] {
+    height: 23px;
+  }
+
+  &[type=file] {
+    padding: 8px;
+  }
+}
+
+input[type=submit] {
+  color: $text-white;
+  background: $accent;
+  &:hover,
+  &:focus,
+  &:active {
+    background: $accent-dark;
+  }
+  &.disabled {
+    background: $accent-light;
+  }
+}
+
+textarea {
+  min-width: 100%;
+  max-width: 100%;
+  .interactive {
+    height: 50px
+  }
+  .expanded {
+    height: auto;
+    min-height: 200px;
+  }
+}
+
+label {
+  @extend .enabled;
+}

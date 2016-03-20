@@ -1,0 +1,26 @@
+.group {
+    border-left: solid 1px rgb(56, 84, 113);
+    padding-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.group:before,
+.group:after {
+    border-top: 1px solid rgb(56, 84, 113);
+    width: 5px;
+    position: absolute;
+    left: -1px;
+    content: '';
+}
+
+.group:after {
+    height: 0;
+    bottom: 0;
+}
+
+.group:before {
+    height: 30px;
+    top: 0;
+}

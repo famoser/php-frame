@@ -1,0 +1,24 @@
+{
+  "name": "famoser/phpFrame",
+  "type": "framework",
+  "license": "MIT",
+  "description": "A very lightweight Framework in PHP for fast deployment of web applciations",
+  "keywords": ["phpFrame", "framework", "php"],
+  "authors": [
+    {
+      "name": "Florian Moser",
+      "email": "git@famoser.ch",
+      "homepage": "http://famoser.ch",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "phpmailer/phpmailer": "5.2.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "famoser\\phpFrame\\": "src/"
+    }
+  }
+}

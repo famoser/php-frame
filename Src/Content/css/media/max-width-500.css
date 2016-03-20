@@ -1,0 +1,5 @@
+@media (max-width: 500px) {
+    header .application {
+        font-size: 1.5em;
+    }
+}

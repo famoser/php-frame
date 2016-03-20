@@ -1,0 +1,13 @@
+{
+  "family": "Flaticon",
+  "fonts": [
+    {
+      "weight": "normal",
+      "style": "normal",
+      "file": "flaticon"
+    }
+  ],
+  "css": [
+    "flaticon.css"
+  ]
+}

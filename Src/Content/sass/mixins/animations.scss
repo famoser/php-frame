@@ -1,0 +1,7 @@
+@mixin animate-property($property-name: all) {
+  -webkit-transition: $property-name $animation-duration-short $animation-kind;
+  -moz-transition: $property-name $animation-duration-short $animation-kind;
+  -ms-transition: $property-name $animation-duration-short $animation-kind;
+  -o-transition: $property-name $animation-duration-short $animation-kind;
+  transition: $property-name $animation-duration-short $animation-kind;
+}

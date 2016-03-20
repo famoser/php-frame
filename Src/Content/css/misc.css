@@ -1,0 +1,167 @@
+.center-content-wrapper {
+    margin-top: 110px;
+}
+
+.primary-menu {
+    background: rgb(241, 241, 244);
+    border-bottom: solid 1px rgb(183, 186, 199);
+}
+
+#tab-content-slider {
+    margin: 20px 0;
+}
+
+.endspacer {
+    height: 500px;
+}
+
+/* Tiles / Menu */
+.submenu-items {
+    background: #ffffff;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.oneline-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    height: 42px;
+}
+
+.oneline-nav li {
+    float: left;
+    border-right: solid 1px rgb(241, 241, 244);
+}
+
+.oneline-nav li a {
+    text-align: center;
+    color: rgb(80, 83, 88);
+
+    padding: 10px;
+    display: block;
+    font-size: 14px;
+
+    text-decoration: none;
+}
+
+.oneline-nav li:hover,
+.oneline-nav li:focus,
+.oneline-nav li:active {
+    text-decoration: underline;
+    color: rgb(80, 83, 88);
+}
+
+.oneline-nav li.active {
+    font-family: "Frutiger Regular", sans-serif;
+}
+
+.tilebutton {
+    border: none;
+    display: block;
+    color: rgb(56, 84, 113);
+    text-align: center;
+    border-radius: 0;
+    padding: 12px;
+}
+
+.tilebutton.onlyicon {
+    font-size: 0;
+}
+
+/* primary layout */
+.content {
+    background: rgb(255, 255, 255);
+    padding: 26px 20px;
+    margin-bottom: 15px;
+}
+
+.right-content {
+    padding-right: 0;
+    float: right;
+}
+
+.footer-info {
+    padding: -10px 5px;
+}
+
+.content .footer-info {
+    margin: 0;
+}
+
+table thead tr th.buttons4 {
+    width: 170px;
+}
+
+table thead tr th.buttons5 {
+    width: 210px;
+}
+
+#tab-content .row {
+    margin: 0;
+}
+
+#tab-content-slider.top-margin {
+    margin-top: 110px
+}
+
+@media (max-width: 991px) {
+    #tab-content-slider.top-margin {
+        margin-top: 10px;
+    }
+}
+
+.circle p {
+    text-align: center;
+}
+
+.circle .c100 {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+    margin-bottom: 20px;
+}
+
+table.procedures tbody tr td:nth-child(2) {
+    width: 105px;
+}
+
+div.content,
+.primary-menu,
+.submenu-items,
+.modal-content {
+    -webkit-box-shadow: 0 0 1px #4c4c4c;
+    -moz-box-shadow: 0 0 1px #4c4c4c;
+    box-shadow: 0 0 1px #4c4c4c;
+}
+
+div.message.content,
+.bootstrap-dialog-message .content{
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+.background-spacer {
+    color: transparent;
+    background: transparent;
+    height: 40px;
+}
+
+
+.loading-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+    z-index: 100;
+    opacity: 0;
+}
+
+.loading-content img {
+    width: 50px;
+    height: 50px;
+}

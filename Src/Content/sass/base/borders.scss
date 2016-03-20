@@ -1,0 +1,10 @@
+.border-passive {
+  border: $border-thickness solid $border-passive;
+  border-radius: $border-radius;
+  @include animate-property(border-color);
+}
+
+.border-active {
+  @extend .border-passive;
+  border-color: $border-active;
+}

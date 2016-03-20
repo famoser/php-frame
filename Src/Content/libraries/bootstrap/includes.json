@@ -1,0 +1,12 @@
+{
+  "required": [
+    "jquery"
+  ],
+  "css": [
+    "bootstrap.css",
+    "bootstrap-theme.css"
+  ],
+  "js": [
+    "bootstrap.js"
+  ]
+}

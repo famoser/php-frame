@@ -1,0 +1,20 @@
+{
+  "family": "Frutiger Neue",
+  "fonts": [
+    {
+      "weight": "normal",
+      "style": "normal",
+      "file": "FrutigerNeueLTW1G-Regular"
+    },
+    {
+      "weight": "300",
+      "style": "normal",
+      "file": "FrutigerNeueLTW1G-Thin"
+    },
+    {
+      "weight": "100",
+      "style": "normal",
+      "file": "FrutigerNeueLTW1G-UltLt"
+    }
+  ]
+}
