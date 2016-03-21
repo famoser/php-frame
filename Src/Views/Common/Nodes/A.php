@@ -16,16 +16,18 @@ class A extends BaseNode {
 	private $alt;
 	private $target;
 
-	public function __construct($link, $text = null, $alt = null, $target = "_blank") {
+	public function __construct($link, $text = null, $alt = null, $target = "_blank", $showText = true) {
 		parent::__construct("a");
 
 		$this->link = $link;
 
-		if ($text == null) {
-			$this->setText($link);
-		}
-		else {
-			$this->setText($text);
+		if ($showText) {
+			if ($text == null) {
+				$this->setText($link);
+			}
+			else {
+				$this->setText($text);
+			}
 		}
 
 		if ($alt == null) {

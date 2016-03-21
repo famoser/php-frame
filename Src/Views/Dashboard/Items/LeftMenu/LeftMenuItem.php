@@ -9,6 +9,8 @@
 namespace famoser\phpFrame\Views\Dashboard\Items\LeftMenu;
 
 
-class LeftMenuItem {
+use famoser\phpFrame\Views\Common\Elements\IconLink;
+
+class LeftMenuItem extends IconLink {
 	
 }

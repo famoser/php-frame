@@ -9,7 +9,7 @@
 
 namespace famoser\phpFrame\Views\Common\Nodes\Base;
 
-use famoser\phpFrame\Views\Common\Nodes\Interfaces\iHtmlElement;
+use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
 class BaseNode extends TextNode {
 	private $id;
@@ -60,7 +60,7 @@ class BaseNode extends TextNode {
 	}
 	
 	/**
-	 * @param iHtmlElement[]|iHtmlElement $children
+	 * @param IHtmlElement[]|IHtmlElement $children
 	 */
 	public function addChildren($children) {
 		if (is_array($children)) {
@@ -69,7 +69,7 @@ class BaseNode extends TextNode {
 			}
 		}
 		else {
-			if ($children instanceof iHtmlElement) {
+			if ($children instanceof IHtmlElement) {
 				$this->children[] = $children;
 			}
 		}

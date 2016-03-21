@@ -10,19 +10,19 @@ namespace famoser\phpFrame\Views\Common\Nodes\Base;
 
 
 use famoser\phpFrame\Views\Common\Nodes\Div;
-use famoser\phpFrame\Views\Common\Nodes\Interfaces\iHtmlElement;
+use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
 class Container extends BaseNode {
 	private $container;
 	
 	/**
-	 * @param iHtmlElement[] $nodes
+	 * @param IHtmlElement[] $nodes
 	 * @param int            $width       (1 -12)
 	 * @param bool           $autoAdjust
 	 * @param int            $paddingLeft (1- 12)
 	 * @param int            $mdWidth
 	 */
-	public function addContent(array $nodes, $width = 12, $autoAdjust = true, $paddingLeft = 0, $mdWidth = 0) {
+	public function addContent(array $nodes, $width = 12, $autoAdjust = true, $paddingLeft = false, $mdWidth = 0) {
 		//todo
 		if ($this->container == null) {
 			$div = new div();
@@ -42,10 +42,10 @@ class Container extends BaseNode {
 		
 		$div = new div();
 		/*$div->addClass("col-lg-" . $width);
-		$div->addClass("col-md-" . $mdWidth);
-		if ($paddingLeft != 0) {
-			$div->addClass("col-lg-offset-" . $paddingLeft);
-		}*/
+		$div->addClass("col-md-" . $mdWidth);*/
+		if (is_numeric($paddingLeft)) {
+			//$div->addClass("col-lg-offset-" . $paddingLeft);
+		}
 		
 		$div->addChildren($nodes);
 		$this->container->addChildren($div);

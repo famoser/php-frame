@@ -6,4 +6,5 @@
  * Time: 21:57
  */
 
+include "../../vendor/autoload.php";
 echo "hallo";

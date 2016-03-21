@@ -9,9 +9,9 @@
 
 namespace famoser\phpFrame\Views\Common\Nodes\Base;
 
-use famoser\phpFrame\Views\Common\Nodes\Interfaces\iHtmlElement;
+use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
-class Text implements iHtmlElement
+class Text implements IHtmlElement
 {
     private $text;
 

@@ -9,14 +9,14 @@
 namespace famoser\phpFrame\Views\Common\Elements\Base;
 
 
-use famoser\phpFrame\Views\Common\Nodes\Interfaces\iHtmlElement;
+use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
-class ElementCollection implements iHtmlElement {
-	/* @var iHtmlElement[] */
+class ElementCollection implements IHtmlElement {
+	/* @var IHtmlElement[] */
 	private $elements = array();
 	
 	/**
-	 * @param iHtmlElement[]|iHtmlElement $children
+	 * @param IHtmlElement[]|IHtmlElement $children
 	 */
 	public function addChildren($children) {
 		if (is_array($children)) {
@@ -25,7 +25,7 @@ class ElementCollection implements iHtmlElement {
 			}
 		}
 		else {
-			if ($children instanceof iHtmlElement) {
+			if ($children instanceof IHtmlElement) {
 				$this->elements[] = $children;
 			}
 		}

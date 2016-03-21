@@ -9,7 +9,7 @@
 namespace famoser\phpFrame\Views\Common\Nodes\Interfaces;
 
 
-interface iHtmlElement
+interface IHtmlElement
 {
     public function getHtml();
 }

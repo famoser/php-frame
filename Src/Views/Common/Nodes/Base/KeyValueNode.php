@@ -9,9 +9,9 @@
 namespace famoser\phpFrame\Views\Common\Nodes\Base;
 
 
-use famoser\phpFrame\Views\Common\Nodes\Interfaces\iHtmlElement;
+use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
-class KeyValueNode implements iHtmlElement
+class KeyValueNode implements IHtmlElement
 {
     private $node;
     private $keyValues = array();
