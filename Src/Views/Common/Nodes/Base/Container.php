@@ -19,10 +19,10 @@ class Container extends BaseNode {
 	 * @param IHtmlElement[] $nodes
 	 * @param int            $width       (1 -12)
 	 * @param bool           $autoAdjust
-	 * @param int            $paddingLeft (1- 12)
-	 * @param int            $mdWidth
+	 * @param int|bool            $paddingLeft (1- 12)
+	 * @param int|false            $mdWidth
 	 */
-	public function addContent(array $nodes, $width = 12, $autoAdjust = true, $paddingLeft = false, $mdWidth = 0) {
+	public function addContent(array $nodes, $width = 12, $autoAdjust = true, $paddingLeft = false, $mdWidth = false) {
 		//todo
 		if ($this->container == null) {
 			$div = new div();
@@ -30,7 +30,7 @@ class Container extends BaseNode {
 			$this->addChildren($div);
 			$this->container = $div;
 		}
-		if ($mdWidth == 0) {
+		if ($mdWidth === false) {
 			$mdWidth = $width;
 			if ($autoAdjust) {
 				$mdWidth = 2 * $mdWidth;
