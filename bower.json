@@ -1,0 +1,28 @@
+{
+  "name": "php-frame",
+  "version": 0.1,
+  "homepage": "https://github.com/famoser/php-frame",
+  "authors": [
+    "famoser <git@famoser.ch>"
+  ],
+  "description": "A very lightweight Framework in PHP for fast deployment of web applications",
+  "keywords": [
+    "php",
+    "frontend"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "2.2.*",
+    "foundation-sites": "6.2.*",
+    "jquery-stupid-table": "*",
+    "foundation-datepicker": "*",
+    "foundation-select": "*"
+  }
+}
