@@ -23,6 +23,6 @@
     "foundation-sites": "6.2.*",
     "jquery-stupid-table": "*",
     "foundation-datepicker": "*",
-    "foundation-select": "*"
+    "foundation5-select": "*"
   }
 }
