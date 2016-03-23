@@ -1,8 +1,0 @@
-{
-  "required": [
-    "jquery"
-  ],
-  "js": [
-    "stupidtable.min.js"
-  ]
-}

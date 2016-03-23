@@ -1,8 +1,0 @@
-{
-  "required": [
-    "bootstrap"
-  ],
-  "css": [
-    "bootstrap-select.css"
-  ]
-}

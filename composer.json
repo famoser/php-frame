@@ -2,8 +2,13 @@
   "name": "famoser/php-frame",
   "type": "framework",
   "license": "MIT",
-  "description": "A very lightweight Framework in PHP for fast deployment of web applciations",
-  "keywords": ["php-frame", "framework", "php", "phpFrame"],
+  "description": "A very lightweight Framework in PHP for fast deployment of web applications",
+  "keywords": [
+    "php-frame",
+    "framework",
+    "php",
+    "phpFrame"
+  ],
   "authors": [
     {
       "name": "Florian Moser",

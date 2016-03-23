@@ -11,26 +11,31 @@ namespace famoser\phpFrame\Views\Dashboard\Items\LeftMenu;
 
 use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
-class LeftMenu implements IHtmlElement {
+class LeftMenu implements IHtmlElement
+{
 
-	private $leftMenuTopItems = array();
-	private $leftMenuSecondaryItems = array();
+    private $leftMenuTopItems = array();
+    private $leftMenuSecondaryItems = array();
 
-	private $info;
+    private $info;
 
-	public function __construct(ApplicationInfo $info) {
-		$this->info = $info;
-	}
+    public function __construct(ApplicationInfo $info)
+    {
+        $this->info = $info;
+    }
 
-	public function addLeftMenuItem(LeftMenuItem $item) {
-		$this->leftMenuTopItems[] = $item;
-	}
+    public function addLeftMenuItem(LeftMenuItem $item)
+    {
+        $this->leftMenuTopItems[] = $item;
+    }
 
-	public function addLeftMenuSecondaryItem(LeftMenuItem $item) {
-		$this->leftMenuSecondaryItems[] = $item;
-	}
+    public function addLeftMenuSecondaryItem(LeftMenuItem $item)
+    {
+        $this->leftMenuSecondaryItems[] = $item;
+    }
 
-	public function getHtml() {
-		// TODO: Implement getHtml() method.
-	}
+    public function getHtml()
+    {
+        // TODO: Implement getHtml() method.
+    }
 }

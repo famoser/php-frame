@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bb3df54b9228662714df2385c72904aa",
-    "content-hash": "b024587a11d6637e199d274fb7df0c37",
+    "hash": "1b6e3aa72bf16c6d4a9bb42f6ec526d8",
+    "content-hash": "b9b020e07a80e39a4bfd42baf79956fc",
     "packages": [
         {
             "name": "famoser/minify",
@@ -130,7 +130,7 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "famoser/minify": 20
     },
