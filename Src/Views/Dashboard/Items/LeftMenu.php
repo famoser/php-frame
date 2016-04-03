@@ -11,7 +11,7 @@ namespace famoser\phpFrame\Views\Dashboard\Items\LeftMenu;
 
 use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 
-class LeftMenu implements IHtmlElement {
+class LeftMenu {
 
 	private $leftMenuTopItems = array();
 	private $leftMenuSecondaryItems = array();
@@ -28,9 +28,5 @@ class LeftMenu implements IHtmlElement {
 
 	public function addLeftMenuSecondaryItem(LeftMenuItem $item) {
 		$this->leftMenuSecondaryItems[] = $item;
-	}
-
-	public function getHtml() {
-		// TODO: Implement getHtml() method.
 	}
 }

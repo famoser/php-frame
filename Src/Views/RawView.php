@@ -7,20 +7,18 @@
  */
 namespace famoser\phpFrame\Views;
 
-use famoser\phpFrame\Helpers\PartHelper;
-
 class RawView extends ViewBase
 {
-    protected $part;
+    protected $content;
 
-    public function __construct($part)
+    public function __construct($content, $title = null, $description = null)
     {
-        parent::__construct();
-        $this->part = $part;
+        parent::__construct($title == null ? $this->getApplicationTitle() : $title, $description);
+        $this->content = $content;
     }
 
-    public function loadTemplate()
+    public function renderView()
     {
-        return $this->loadFile(PartHelper::getInstance()->getPart($this->part));
+        return $this->content;
     }
 }

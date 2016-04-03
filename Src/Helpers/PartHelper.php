@@ -408,6 +408,7 @@ class PartHelper extends HelperBase
         return $html;
     }
 
+    /*
     public function getPart($const)
     {
         if ($const == PartHelper::PART_HEAD)
@@ -431,7 +432,7 @@ class PartHelper extends HelperBase
 
         LogHelper::getInstance()->logError("Part not found with const " . $const);
         return PartHelper::getPart(PartHelper::PART_MESSAGES);
-    }
+    }*/
 
     public function getLogClass(LogItem $log)
     {

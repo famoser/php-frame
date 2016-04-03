@@ -9,10 +9,9 @@
 namespace famoser\phpFrame\Views\Dashboard\Items\LeftMenu;
 
 
-use famoser\phpFrame\Views\Common\Nodes\Interfaces\IHtmlElement;
 use famoser\phpFrame\Views\Dashboard\Items\TopBar\ShortCut;
 
-class TopBar implements IHtmlElement {
+class TopBar {
 	private $pageName;
 	private $shortCuts = array();
 

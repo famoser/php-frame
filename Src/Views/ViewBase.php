@@ -20,70 +20,30 @@ abstract class ViewBase
      * Enthält die Variablen, die in das Template eingebettet
      * werden sollen.
      */
-    private $collection = array();
     private $pageTitle;
     private $pageDescription;
-    private $pageAuthor;
-    private $pageAuthorUrl;
-
-    private $viewModels = array();
 
     private $applicationTitle;
     private $applicationUrl;
+    private $applicationAuthor;
+    private $applicationAuthorUrl;
 
-    private $subMenu;
-    private $mainMenu;
+    private $keyValues = array();
 
-    private $params;
-
-    public function __construct($title = null, $description = null)
+    public function __construct($title, $description)
     {
-        if ($title != null)
-            $this->pageTitle = $title;
-        if ($description != null)
-            $this->pageDescription = $description;
+        $this->pageTitle = $title;
+        $this->pageDescription = $description;
     }
 
-    /**
-     * @param IconMenuItem[] $mainMenu
-     * @param MenuItem[] $subMenu
-     */
-    public function setMenus($mainMenu, $subMenu)
-    {
-        $this->mainMenu = $mainMenu;
-        $this->subMenu = $subMenu;
-    }
-
-    public function setDefaultValues($defaultTitle, $defaultDescription, $defaultAuthor, $defaultAuthorUrl)
-    {
-        if ($this->pageTitle == "")
-            $this->pageTitle = $defaultTitle;
-        if ($this->pageDescription == "")
-            $this->pageDescription = $defaultDescription;
-        if ($this->pageAuthor == "")
-            $this->pageAuthor = $defaultAuthor;
-        if ($this->pageAuthorUrl == "")
-            $this->pageAuthorUrl = $defaultAuthorUrl;
-    }
-
-    public function setApplicationValues($applicationTitle, $baseUrl)
+    public function setApplicationValues($applicationTitle, $applicationUrl, $applicationAuthor, $applicationAuthorUrl)
     {
         $this->applicationTitle = $applicationTitle;
-        $this->applicationUrl = $baseUrl;
+        $this->applicationUrl = $applicationUrl;
+        $this->applicationAuthor = $applicationAuthor;
+        $this->applicationAuthorUrl = $applicationAuthorUrl;
     }
 
-    /**
-     * @param string[] $params
-     */
-    public function setParams(array $params)
-    {
-        $this->params = $params;
-    }
-
-    public function addViewModel($key)
-    {
-        $this->viewModels[] = $key;
-    }
 
     /**
      * Ordnet eine Variable einem bestimmten Schlüssel zu.
@@ -93,21 +53,23 @@ abstract class ViewBase
      */
     public function assign($key, $value)
     {
-        $this->collection[$key] = $value;
+        $this->keyValues[$key] = $value;
     }
 
     public function retrieve($key)
     {
-        if (isset($this->collection[$key]))
-            return $this->collection[$key];
+        if (isset($this->keyValues[$key])) {
+            return $this->keyValues[$key];
+        }
         LogHelper::getInstance()->logError("item not found in view: " . $key);
         return null;
     }
 
     public function tryRetrieve($key)
     {
-        if (isset($this->collection[$key]))
-            return $this->collection[$key];
+        if (isset($this->keyValues[$key])) {
+            return $this->keyValues[$key];
+        }
         return null;
     }
 
@@ -144,79 +106,7 @@ abstract class ViewBase
     }
 
     /**
-     * @return string
-     */
-    public function getPageAuthor()
-    {
-        return $this->pageAuthor;
-    }
-
-    /**
-     * @param string $pageAuthor
-     */
-    public function setPageAuthor($pageAuthor)
-    {
-        $this->pageAuthor = $pageAuthor;
-    }
-
-    /**
-     * @return MenuItem[]
-     */
-    public function getSubMenu()
-    {
-        return $this->subMenu;
-    }
-
-    /**
-     * @return IconMenuItem[]
-     */
-    public function getMainMenu()
-    {
-        return $this->mainMenu;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * @return string
-     */
-    public function getApplicationUrl()
-    {
-        return $this->applicationUrl;
-    }
-
-    /**
-     * @param string $applicationUrl
-     */
-    public function setApplicationUrl($applicationUrl)
-    {
-        $this->applicationUrl = $applicationUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPageAuthorUrl()
-    {
-        return $this->pageAuthorUrl;
-    }
-
-    /**
-     * @param string $pageAuthorUrl
-     */
-    public function setPageAuthorUrl($pageAuthorUrl)
-    {
-        $this->pageAuthorUrl = $pageAuthorUrl;
-    }
-
-    /**
-     * @return string
+     * @return mixed
      */
     public function getApplicationTitle()
     {
@@ -224,41 +114,38 @@ abstract class ViewBase
     }
 
     /**
-     * @param string $applicationTitle
+     * @return mixed
      */
-    public function setApplicationTitle($applicationTitle)
+    public function getApplicationUrl()
     {
-        $this->applicationTitle = $applicationTitle;
+        return $this->applicationUrl;
     }
 
     /**
-     * @return ControllerConfigModel[]
+     * @return mixed
      */
-    public function getViewModels()
+    public function getApplicationAuthor()
     {
-        return $this->viewModels;
+        return $this->applicationAuthor;
     }
 
-    protected function loadFile($file)
+    /**
+     * @return mixed
+     */
+    public function getApplicationAuthorUrl()
     {
-        ob_start();
-
-        $this->includeFile($file);
-
-        $output = ob_get_clean();
-        $output = OutputHelper::getInstance()->sanitizeOutput($output);
-
-        return $output;
+        return $this->applicationAuthorUrl;
     }
 
     public function includeFile($file)
     {
-        if (file_exists($file))
+        if (file_exists($file)) {
             include $file;
-        else
+        } else {
             LogHelper::getInstance()->logError("file does not exist: " . $file);
+        }
 
     }
 
-    abstract public function loadTemplate();
+    abstract public function renderView();
 }
