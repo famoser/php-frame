@@ -20,9 +20,7 @@
   ],
   "dependencies": {
     "jquery": "2.2.*",
-    "foundation-sites": "6.2.*",
     "jquery-stupid-table": "*",
-    "foundation-datepicker": "*",
-    "foundation5-select": "*"
+    "semantic-ui": "*"
   }
 }
