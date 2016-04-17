@@ -1,0 +1,1 @@
+npm install gulp gulp-rename gulp-uglify gulp-all gulp-clean-css gulp-concat gulp-sourcemaps gulp-bower gulp-minify-css del --save-dev

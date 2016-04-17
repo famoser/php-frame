@@ -1,0 +1,2 @@
+cd semantic/
+gulp watch
