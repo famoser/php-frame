@@ -34,11 +34,6 @@ var config = {
     before_bundling_jobs: ["clean-scripts", "bower-restore"]
 };
 
-// Synchronously delete the output script file(s)
-gulp.task("clean-scripts", function () {
-    del([path.lib]);
-});
-
 //Create a jquery bundled file
 gulp.task("jquery-bundle", config.before_bundling_jobs, function () {
     return gulp.src(config.jquery_src)
@@ -66,7 +61,12 @@ gulp.task("bower-restore", function () {
     return bower();
 });
 
-//build lib scripts
+// Synchronously delete the output script file(s)
+gulp.task("clean-scripts", function () {
+    del([path.lib]);
+});
+
+//build js
 gulp.task("compile-js", ["bundle-scripts"], function () {
     return gulp.src(path.js_lib + "*.js")
         .pipe(sourcemaps.init())
@@ -78,9 +78,9 @@ gulp.task("compile-js", ["bundle-scripts"], function () {
         .pipe(gulp.dest(path.js_lib));
 });
 
-//build lib scripts
+//build css
 gulp.task("compile-css", ["bundle-scripts"], function () {
-    return gulp.src(path.js_lib + "*.css")
+    return gulp.src(path.css_lib + "*.css")
         .pipe(concat("styles.css"))
         .pipe(gulp.dest(path.css_lib))
         .pipe(rename("styles.min.css"))
@@ -88,4 +88,4 @@ gulp.task("compile-css", ["bundle-scripts"], function () {
         .pipe(gulp.dest(path.css_lib));
 });
 
-gulp.task('default', ['compile-js', 'compile-js']);
+gulp.task('default', ['compile-css', 'compile-js']);
