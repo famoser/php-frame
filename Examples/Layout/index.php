@@ -21,41 +21,28 @@ include "../../vendor/autoload.php";
     <title>Layout</title>
 </head>
 <body>
-<div id="sidebar_left" class="ui sidebar menu vertical borderless">
-    <a class="item">
-        Item 1
-    </a>
-    <a class="item">
-        Item 2
-    </a>
-    <a class="item">
-        Item 3
-    </a>
-</div>
-<div class="pusher">
-    <div class="ui one column stackable grid container">
-        <div class="column">
-            <div class="ui segment pink">
+<div id="view full height">
+    <div id="menu-left" class="ui sidebar menu vertical borderless">
+        <a class="item">
+            Item 1
+        </a>
+        <a class="item">
+            Item 2
+        </a>
+        <a class="item">
+            Item 3
+        </a>
+    </div>
+    <div id="content-right">
+        <div id="header">
+
+        </div>
+        <div id="center-content">
+            <div class="ui container">
                 <p>Hallo Welt!</p>
             </div>
         </div>
-        <div class="column">
-            <div class="ui segment">Content</div>
-        </div>
-        <div class="column">
-            <div class="ui segment">Content</div>
-        </div>
-        <div class="column">
-            <div class="ui segment">Content</div>
-        </div>
-        <div class="column">
-            <div class="ui segment">Content</div>
-        </div>
-        <div class="column">
-            <div class="ui segment">Content</div>
-        </div>
     </div>
-    
 </div>
 <script type="text/javascript" src="dist/js/scripts.min.js"></script>
 <script type="text/javascript">
