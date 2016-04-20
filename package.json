@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/famoser/php-frame",
   "devDependencies": {
+    "browser-sync": "^2.12.3",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-all": "^1.1.0",

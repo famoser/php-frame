@@ -1,6 +1,29 @@
-.menu-left
-  width: 150px
-  background: $grey
+#view
+  display: flex
 
-.menu
-  direction: ltr
+#menu-left
+  flex: 0 0 auto
+  background-color: $grey
+  width: 180px
+  height: 100%
+
+#content-right
+  flex: 1 1 auto
+  background-color: red
+  position: relative
+
+#header
+  position: fixed
+  top: 0
+  background-color: white
+  width: 100%
+  @include border-bottom
+
+
+#header h1
+  padding: 1em
+  font-size: 1.5em
+
+#center-content
+  margin-top: 3em
+
