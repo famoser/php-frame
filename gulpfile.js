@@ -12,10 +12,12 @@ var bower = require("gulp-bower");
 var sass = require("gulp-sass");
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
+var browserSync = require('browser-sync');
 
 var path = {
     src: "bower_components/",
     lib: "dist",
+    font_lib: "dist/fonts/",
     js_lib: "dist/js/",
     css_lib: "dist/css/",
     js_lib_pre: "dist/js/pre/",
@@ -48,7 +50,8 @@ var config = {
         "Src/Content/js/**/*.js"
     ],
     framework_js_watch: "Src/Content/sass/**/*.js",
-    framework_js_bundle: "php-frame-bundle.js"
+    framework_js_bundle: "php-frame-bundle.js",
+    font_src_folder: "Src/Content/fonts/**/*"
 };
 var collections = {
     all_css_files: [
@@ -57,8 +60,8 @@ var collections = {
     ],
 
     all_js_files: [
-        path.js_lib_pre + config.semantic_js_bundle,
         path.js_lib_pre  + config.jquery_bundle,
+        path.js_lib_pre + config.semantic_js_bundle
         //"php-frame-bundle.js"
     ]
 };
@@ -103,7 +106,10 @@ gulp.task("combine-minify-css", function () {
         .pipe(gulp.dest(path.css_lib))
         .pipe(rename("styles.min.css"))
         .pipe(minifyCSS())
-        .pipe(gulp.dest(path.css_lib));
+        .pipe(gulp.dest(path.css_lib))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
 });
 
 //combine & minify js
@@ -115,7 +121,14 @@ gulp.task("combine-minify-js", function () {
         .pipe(rename("scripts.min.js"))
         .pipe(uglify())
         .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest(path.js_lib));
+        .pipe(gulp.dest(path.js_lib))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
+});
+
+gulp.task("copy-fonts", function () {
+    return gulp.src(config.font_src_folder).pipe(gulp.dest(path.font_lib));
 });
 
 //build js
@@ -136,13 +149,16 @@ gulp.task("compile-framework-sass", function () {
 });
 
 //build js
-gulp.task("compile-js", ["create-bundles", "combile-js"], function () {
+gulp.task("compile-js", ["create-bundles"], function () {
     gulp.start('combine-minify-js');
 });
 
 //build css
 gulp.task("compile-css", ["create-bundles", "compile-framework-sass"], function () {
     gulp.start('combine-minify-css');
+});
+
+gulp.task("copy-files", ["copy-fonts"], function () {
 });
 
 //build css
@@ -155,15 +171,22 @@ gulp.task("framework-js-recompile", ["compile-framework-js"], function () {
     gulp.start('combine-minify-js');
 });
 
-gulp.task('default', ['compile-css', 'compile-js']);
+gulp.task('browser-sync', function () {
+    browserSync.init({
+        proxy: "http://localhost:8080/php-frame/Examples/Layout/"
+    });
+});
 
-gulp.task('watch', function () {
+gulp.task('default', ['compile-css', 'compile-js', 'copy-files']);
+
+gulp.task('watch', ["browser-sync"], function () {
     watch(config.framework_css_watch, function () {
         gulp.start('framework-css-recompile');
     });
     watch(config.framework_js_watch, function () {
         gulp.start('framework-js-recompile');
     });
+
 });
 
 gulp.task('clean', ["clean-scripts"], function () {
