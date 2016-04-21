@@ -5,7 +5,7 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var all = require('gulp-all');
 var del = require("del");
-var minifyCSS = require("gulp-minify-css");
+var cleanCss = require("gulp-clean-css");
 var concat = require('gulp-concat');
 var sourcemaps = require('gulp-sourcemaps');
 var bower = require("gulp-bower");
@@ -15,8 +15,8 @@ var batch = require('gulp-batch');
 var browserSync = require('browser-sync');
 
 var path = {
-    src: "bower_components/",
-    lib: "dist",
+    bower_src: "bower_components/",
+    lib: "dist/",
     font_lib: "dist/fonts/",
     js_lib: "dist/js/",
     css_lib: "dist/css/",
@@ -26,18 +26,20 @@ var path = {
 
 var config = {
     jquery_src: [
-        path.src + "jquery/dist/jquery.js",
-        path.src + "jquery-stupid-table/stupidtable.js"
+        path.bower_src + "jquery/dist/jquery.js",
+        path.bower_src + "jquery-stupid-table/stupidtable.js"
     ],
     jquery_bundle: "_jquery-bundle.js",
     semantic_js_src: [
-        path.src + "semantic-ui/dist/semantic.js"
+        path.bower_src + "semantic-ui/dist/semantic.js"
     ],
     semantic_js_bundle: "_semantic-bundle.js",
     semantic_css_src: [
-        path.src + "semantic-ui/dist/semantic.css"
+        path.bower_src + "semantic-ui/dist/semantic.css"
     ],
     semantic_css_bundle: "_semantic-bundle.css",
+    semantic_theme_folder_src: path.bower_src + "semantic-ui/dist/themes/**/*",
+    semantic_theme_folder_dest: "css/themes",
     before_bundling_jobs: ["bower-restore"],
 
     framework_sass_src: [
@@ -91,7 +93,9 @@ gulp.task("semantic-bundle", config.before_bundling_jobs, function () {
         .pipe(gulp.dest(path.js_lib_pre)),
         gulp.src(config.semantic_css_src)
             .pipe(concat(config.semantic_css_bundle))
-            .pipe(gulp.dest(path.css_lib_pre)))
+            .pipe(gulp.dest(path.css_lib_pre)),
+        gulp.src(config.semantic_theme_folder_src)
+            .pipe(gulp.dest(path.lib + config.semantic_theme_folder_dest)))
 });
 
 // create bundles
@@ -105,7 +109,7 @@ gulp.task("combine-minify-css", function () {
         .pipe(concat("styles.css"))
         .pipe(gulp.dest(path.css_lib))
         .pipe(rename("styles.min.css"))
-        .pipe(minifyCSS())
+        .pipe(cleanCss())
         .pipe(gulp.dest(path.css_lib))
         .pipe(browserSync.reload({
             stream: true
@@ -128,7 +132,8 @@ gulp.task("combine-minify-js", function () {
 });
 
 gulp.task("copy-fonts", function () {
-    return gulp.src(config.font_src_folder).pipe(gulp.dest(path.font_lib));
+    return gulp.src(config.font_src_folder)
+        .pipe(gulp.dest(path.font_lib));
 });
 
 //build js

@@ -25,6 +25,7 @@ include "../../vendor/autoload.php";
     <div id="menu-left">
         <div id="menu-left" class="ui vertical menu">
             <a class="item">
+                <i class="spinner loading icon"></i>
                 Dashboard
             </a>
             <a class="item">
