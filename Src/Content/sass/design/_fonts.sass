@@ -1,7 +1,12 @@
-p, ul
+p, ul, a
   font-family: "Lato Light", sans-serif
-  color: $text-grey
+  color: $text-foreground
 
 h1, h2, h3, h4, h5
   font-family: "Lato Thin", sans-serif
   color: $title-grey
+
+a
+  &:hover, &:focus, &:active
+    text-decoration: none
+    color: $text-secondary-foreground
