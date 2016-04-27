@@ -1,3 +1,4 @@
+/* grey */
 @font-face {
   font-family: "Lato Light";
   src: url("../fonts/lato/light/Lato-Light.eot");
@@ -26,7 +27,7 @@
   font-weight: normal;
   font-style: italic; }
 
-p, ul {
+p, ul, a {
   font-family: "Lato Light", sans-serif;
   color: #333; }
 
@@ -34,25 +35,30 @@ h1, h2, h3, h4, h5 {
   font-family: "Lato Thin", sans-serif;
   color: #555; }
 
+a:hover, a:focus, a:active {
+  text-decoration: none;
+  color: #959494; }
+
 .full .height {
   height: 100%; }
 
 .full .width {
   width: 100%; }
 
+.header {
+  font-family: "Lato Thin", sans-serif; }
+
 #view {
   display: flex; }
 
-#menu-left {
-  flex: 0 0 auto;
-  background-color: #2b333d;
-  width: 180px;
-  height: 100%; }
-
 #content-right {
   flex: 1 1 auto;
-  background-color: red;
+  background-color: #fff;
   position: relative; }
+
+#center-content {
+  margin-top: 5em;
+  padding: 1em; }
 
 #header {
   position: fixed;
@@ -65,5 +71,11 @@ h1, h2, h3, h4, h5 {
   padding: 1em;
   font-size: 1.5em; }
 
-#center-content {
-  margin-top: 3em; }
+#menu-left {
+  flex: 0 0 auto;
+  background-color: #2b333d;
+  min-height: 100%;
+  width: 15em;
+  content: "";
+  display: table;
+  clear: both; }
