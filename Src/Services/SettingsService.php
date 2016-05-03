@@ -13,14 +13,32 @@ use famoser\phpFrame\Helpers\FileHelper;
 
 class SettingsService extends ServiceBase
 {
+    private $configFileName = "configuration.json";
+
     public function __construct()
     {
         parent::__construct(false);
-        $configFilePath = $this->getSourceDir() . "/FrameworkAssets/configuration.json";
-        $resp = FileHelper::getInstance()->getJsonArray($configFilePath);
-        if ($resp === false)
-            LogHelper::getInstance()->logFatal("could not find configuration file at " . $configFilePath);
-        $this->setConfig($resp);
+    }
+
+    private $folders = array();
+    public function addFolder($folder)
+    {
+        if (is_array($folder))
+            foreach ($folder as $item) {
+                $this->addFolder($item);
+            }
+        $this->folders[] = $folder;
+    }
+
+    public function configure()
+    {
+        foreach ($this->folders as $folder) {
+            $configFilePath = combine_paths($folder, $this->configFileName);
+            $resp = FileHelper::getInstance()->getJsonArray($configFilePath);
+            if ($resp === false)
+                LogHelper::getInstance()->logFatal("could not find configuration file at " . $configFilePath);
+            $this->addConfig($resp);
+        }
     }
 
     public function getSourceDir()

@@ -17,21 +17,9 @@ use famoser\phpFrame\Services\SettingsService;
 
 class phpFrameHook {
 
-    public static function hi_framework() {
+    public static function hi_framework($configFolders) {
         include_once __DIR__ . DIRECTORY_SEPARATOR . "phplibrary.php";
-        
-        spl_autoload_register(function ($class) {
-            if (!AutoLoader::getInstance()->includeClass($class))
-                phpFrameHook::bye_framework(false);
-        });
-        
-        $nameSpaces = SettingsService::getInstance()->tryGetValueFor(array("Framework", "AutoLoader"));
-        if (is_array($nameSpaces)) {
-            foreach ($nameSpaces as $nameSpace => $folder) {
-                AutoLoader::getInstance()->addNameSpace($nameSpace, $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . $folder);
-            }
-        }
-        
+        SettingsService::getInstance()->addFolder($configFolders);
         RuntimeService::getInstance()->setFrameworkDirectory(__DIR__);
 
         $val = SettingsService::getInstance()->tryGetValueFor(array("Framework", "DebugMode"));

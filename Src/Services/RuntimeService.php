@@ -32,7 +32,6 @@ class RuntimeService extends ServiceBase
         if (str_ends_with($documentRoot, "/"))
             $documentRoot = substr($documentRoot, 0, -1);
         $this->templatesDirectory = $_SERVER["DOCUMENT_ROOT"] . $documentRoot . DIRECTORY_SEPARATOR . $this->getConfig("TemplatesDirectory");
-        $this->frameworkAssetsDirectory = $_SERVER["DOCUMENT_ROOT"] . $documentRoot . DIRECTORY_SEPARATOR . $this->getConfig("FrameworkAssetsDirectory");
         $this->cacheDirectory = $_SERVER["DOCUMENT_ROOT"] . $documentRoot . DIRECTORY_SEPARATOR . $this->getConfig("CacheDirectory");
         $this->baseDirectory = $_SERVER["DOCUMENT_ROOT"] . $documentRoot;
     }
@@ -170,29 +169,5 @@ class RuntimeService extends ServiceBase
     public function getLocaleDirectory()
     {
         return $this->getFrameworkAssetsDirectory() . DIRECTORY_SEPARATOR . "Locale";
-    }
-
-    /**
-     * @return string
-     */
-    public function getFrameworkContentDirectory()
-    {
-        return $this->getFrameworkDirectory() . DIRECTORY_SEPARATOR . "Content";
-    }
-
-    /**
-     * @return string
-     */
-    public function getFrameworkLibraryDirectory()
-    {
-        return $this->getFrameworkDirectory() . DIRECTORY_SEPARATOR . "Libraries";
-    }
-
-    /**
-     * @return string
-     */
-    public function getBaseDirectory()
-    {
-        return $this->baseDirectory;
     }
 }

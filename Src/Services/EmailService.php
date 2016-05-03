@@ -15,19 +15,16 @@ use PHPMailer;
 
 class EmailService extends ServiceBase
 {
-    private $hook;
-
     public function __construct()
     {
         parent::__construct();
-        include_once RuntimeService::getInstance()->getFrameworkLibraryDirectory() . DIRECTORY_SEPARATOR . "PHPMailer/PHPMailerAutoload.php";
     }
 
     public function sendEmailFromServer($subject, $message, $emails, $names = '', $attachments = null, $ccEmails = null, $ccNames = null)
     {
         $mail = new PHPMailer;
         $mail->CharSet = 'utf-8';
-        $mail->SetLanguage(LocaleService::getInstance()->getActiveLang()->getName());
+        $mail->setLanguage(LocaleService::getInstance()->getActiveLang()->getName());
         $mail->isSMTP();
         $mail->Host = $this->getConfig("ServerHost");
         $mail->SMTPAuth = true;
@@ -67,7 +64,7 @@ class EmailService extends ServiceBase
 
         if ($attachments != null)
             for ($i = 0; $i < count($attachments); $i++) {
-                $mail->AddAttachment($attachments[$i]);
+                $mail->addAttachment($attachments[$i]);
             }
 
         $mail->isHTML(true);

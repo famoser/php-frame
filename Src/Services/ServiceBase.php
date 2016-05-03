@@ -14,7 +14,7 @@ use famoser\phpFrame\Core\Singleton\Singleton;
 
 class ServiceBase extends Singleton
 {
-    private $config;
+    private $config = array();
 
     public function __construct($getConfig = true, $customName = null)
     {
@@ -67,8 +67,8 @@ class ServiceBase extends Singleton
         }
     }
 
-    protected function setConfig($config)
+    protected function addConfig($config)
     {
-        $this->config = $config;
+        $this->config = array_outer_join($this->config, $config);
     }
 }
