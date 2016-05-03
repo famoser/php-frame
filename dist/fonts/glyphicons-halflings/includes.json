@@ -1,0 +1,10 @@
+{
+  "family": "Glyphicons Halflings",
+  "fonts": [
+    {
+      "weight": "normal",
+      "style": "normal",
+      "file": "glyphicons-halflings-regular"
+    }
+  ]
+}
